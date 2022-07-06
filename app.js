@@ -1,7 +1,9 @@
 const addForm = document.querySelector('.add');
 const list = document.querySelector('.todos');
 const search = document.querySelector('.search input');
+const noTask = document.querySelector('.no-task');
 
+nb = 2; 
 const generateTemplate = todo => {
     const html = `
       <li class="list-group-item d-flex justify-content-between align-items-center text-light">
@@ -20,6 +22,7 @@ addForm.addEventListener('submit', e => {
         generateTemplate(todo);
         addForm.reset();
     }
+    nb ++ ;
 });
 
 //delete todos
@@ -27,6 +30,11 @@ list.addEventListener('click', e => {
     if(e.target.classList.contains('delete')){
         e.target.parentElement.remove();
     }
+    nb -- ;
+    if(nb == 0){
+        noTask.classList.remove('d-none');
+    }
+
 });
 
 const filterTodos = (term) => {
