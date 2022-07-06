@@ -23,6 +23,10 @@ addForm.addEventListener('submit', e => {
         addForm.reset();
     }
     nb ++ ;
+
+    if (nb>0){
+        noTask.classList.add('d-none');
+    }
 });
 
 //delete todos
