@@ -3,6 +3,18 @@ const list = document.querySelector('.todos');
 const search = document.querySelector('.search input');
 const noTask = document.querySelector('.no-task');
 
+const html_templete = `
+    <li class="list-group-item d-flex justify-content-between align-items-center text-light">
+        <span>Hello mate, enjoy using my todo app</span>
+        <i class="far fa-trash-alt delete"></i>
+    </li>
+    <li class="list-group-item d-flex justify-content-between align-items-center text-light">
+        <span>Don't forget to practice some programming skills today</span>
+        <i class="far fa-trash-alt delete"></i>
+    </li>
+`;
+list.innerHTML += html_templete;
+
 nb = 2; 
 const generateTemplate = todo => {
     const html = `
@@ -21,10 +33,11 @@ addForm.addEventListener('submit', e => {
     if(todo.length){
         generateTemplate(todo);
         addForm.reset();
+        nb ++ ;
     }
-    nb ++ ;
+    
 
-    if (nb>0){
+    if (nb > 0){
         noTask.classList.add('d-none');
     }
 });
@@ -33,8 +46,9 @@ addForm.addEventListener('submit', e => {
 list.addEventListener('click', e => {
     if(e.target.classList.contains('delete')){
         e.target.parentElement.remove();
+        nb -- ;
     }
-    nb -- ;
+    
     if(nb == 0){
         noTask.classList.remove('d-none');
     }
