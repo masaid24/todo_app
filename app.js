@@ -3,19 +3,26 @@ const list = document.querySelector('.todos');
 const search = document.querySelector('.search input');
 const noTask = document.querySelector('.no-task');
 
-const html_templete = `
-    <li class="list-group-item d-flex justify-content-between align-items-center text-light">
-        <span>Hello mate, enjoy using my todo app</span>
-        <i class="far fa-trash-alt delete"></i>
-    </li>
-    <li class="list-group-item d-flex justify-content-between align-items-center text-light">
-        <span>Don't forget to practice some programming skills today</span>
-        <i class="far fa-trash-alt delete"></i>
-    </li>
-`;
-list.innerHTML += html_templete;
+let current_todos = JSON.parse(localStorage.getItem('todos')) || [];
+let nb_todos = 0;
+// const html_templete = `
+//     <li class="list-group-item d-flex justify-content-between align-items-center text-light">
+//         <span>Hello mate, enjoy using my todo app</span>
+//         <i class="far fa-trash-alt delete"></i>
+//     </li>
+//     <li class="list-group-item d-flex justify-content-between align-items-center text-light">
+//         <span>Don't forget to practice some programming skills today</span>
+//         <i class="far fa-trash-alt delete"></i>
+//     </li>
+// `;
+// list.innerHTML += html_templete;
 
-nb = 2; 
+
+function showEmptyMessage() {
+    if(nb_todos) noTask.classList.add('d-none');
+    else noTask.classList.remove('d-none');
+}
+
 const generateTemplate = todo => {
     const html = `
       <li class="list-group-item d-flex justify-content-between align-items-center text-light">
@@ -27,34 +34,35 @@ const generateTemplate = todo => {
     list.innerHTML += html;
 };
 
+// add todos
 addForm.addEventListener('submit', e => {
     e.preventDefault();
     const todo = addForm.add.value.trim();
     if(todo.length){
         generateTemplate(todo);
         addForm.reset();
-        nb ++ ;
+        current_todos.push(todo);
+        nb_todos++ ;
+        localStorage.setItem('todos', JSON.stringify(current_todos));
+        showEmptyMessage();
     }
-    
 
-    if (nb > 0){
-        noTask.classList.add('d-none');
-    }
 });
+
 
 //delete todos
 list.addEventListener('click', e => {
     if(e.target.classList.contains('delete')){
+        const value = e.target.previousElementSibling.textContent;
+        current_todos = current_todos.filter(ele => ele != value);
+        localStorage.setItem('todos', JSON.stringify(current_todos));
         e.target.parentElement.remove();
-        nb -- ;
+        nb_todos-- ;
+        showEmptyMessage();
     }
-    
-    if(nb == 0){
-        noTask.classList.remove('d-none');
-    }
-
 });
 
+// search todos
 const filterTodos = (term) => {
 
     Array.from(list.children)
@@ -71,3 +79,13 @@ search.addEventListener('keyup', () => {
     filterTodos(term);
 });
 
+if(localStorage.getItem('todos')){
+    JSON.parse(localStorage.getItem('todos'))
+        .forEach(todo => {
+            generateTemplate(todo);
+            addForm.reset();
+            nb_todos++;
+        });
+}
+
+showEmptyMessage();
